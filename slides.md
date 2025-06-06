@@ -12,8 +12,6 @@ mdc: true
 
 # 前端的架構討論
 
-沒有絕對好的架構，只有適合當下團隊的架構
-
 <div class="abs-br m-6 text-xl">
   <a href="https://gitlab.aservice.com.tw/hepiuscare/frontend/apps/hepius-record" target="_blank" class="slidev-icon-btn">
     <carbon:logo-github />
