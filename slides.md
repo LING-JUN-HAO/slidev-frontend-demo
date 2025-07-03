@@ -528,6 +528,24 @@ strong{
 layout: center
 ---
 
+---
+
+# 修改後版本 Vita 專案架構圖
+
+<v-click>
+ <img src="./public/newArchitecture02.png" class='mt-5' />
+</v-click>
+
+<style>
+.slidev-layout h1 + p {
+  opacity: 1;
+}
+
+img{
+  padding-bottom: 1rem;
+}
+</style>
+
 # Vita 實作的優化建議
 
 ---
