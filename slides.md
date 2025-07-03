@@ -458,14 +458,14 @@ strong{
 layout: two-cols
 ---
 
-# 原 HttpService 包裝
+# HttpService 優化方案
 
 - 維持 HttpService 方式，但讓**uri**跟**型別**統一定義 {.section-spacing}
-> 拆開定義的情況下，需要兩個步驟，容易變得難以識別
-> 1. api-reference.json + 2. dtoMapping
+> 問題：目前拆開定義需要兩個步驟，容易造成識別困難
+> Step 1. api-reference.json + Step 2. dtoMapping
 
-- 避免使用 api.reference.json 定義 baseUrl，使用 environment 統一管理 {.section-spacing}
-> - 對於 CI/CD 友善，可直接透過 production 環境變數動態調整
+- 使用環境設定統一管理關於 baseUrl 的部分 {.section-spacing}
+> - 對於 CI/CD 友善，可直接透過環境變數動態調整
 > - 對於開發者也不需要擔心測試及正式 baseUrl 的修改，不小心 push 上去
 
 <hr />
@@ -517,6 +517,10 @@ li{
 
 strong{
   color: #D79B00;
+}
+
+.slidev-layout{
+  gap: 2rem;
 }
 </style>
 
