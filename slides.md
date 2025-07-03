@@ -18,7 +18,7 @@ mdc: true
   </a>
 </div>
 ---
-layout: center
+layout: full
 ---
 
 ## 議題討論(以 Vita 實作議題切入)
@@ -42,13 +42,15 @@ ul{
 
 <v-clicks every="1" class="full-height mt-5 flex gap-1.2 flex-col text-[1.4rem]">
 
-- 組件分類紊亂：
-  - 從各個組件當中，難以分辨其哪些是**頁面組件**哪些是**功能組件**，接手的學習成本高
-  - 沒辦法將**網頁佈局(layout)組件**清楚辨識，讓開發者專注在開發單一組件的功能
-- 不使用路由管理組件管理導致專案
-  - 大量使用**動態組件**，導致組件狀態難以管控，彼此之間耦合性高
-  - 路由核心功能沒有合適位置定義：路由常用功能 **resolve(動態請求資料)**、**guard(路由守衛)**、**store(全域狀態管理資料)** 及 **interceptors(攔截器)** 沒有合適的地方擺放
-- api.reference.json 開發困境：端點跟型別分開定義，導致難以快速識別 api 功能，且後續不易擴展
+- 頁面與功能組件分類紊亂：：
+  - 難以明確區分**頁面組件** 與 **功能組件**，增加新成員的學習與接手成本。
+- 佈局與頁面組件職責混雜：
+  - **網頁佈局(Layout)** 組件與頁面組件的職責界線模糊，影響開發者專注於單一組件的功能開發。
+- 缺乏健全路由管理：
+  - 大量使用 **動態組件**，導致組件間耦合度高，狀態管理複雜。
+  - 路由核心功能如**resolve(資料預載)**、**guard(路由守衛)**、**store(全域狀態)** 及 **interceptors(攔截器)** 缺乏統一明確的定義位置。
+- api.reference.json 開發困境：
+  - **端點(Endpoint)** 與 **型別(Type)分離定義**，降低 API 功能的辨識度。
 
 </v-clicks>
 
@@ -70,6 +72,10 @@ strong {
 .slidev-layout h1 + p {
   opacity: 1;
 }
+
+img{
+  padding-bottom: 1rem;
+}
 </style>
 
 ---
@@ -87,17 +93,16 @@ backgroundSize: 'contain'
 # 主程式結構
 
 ### 頁面組件 {.section-spacing}
-> - 定義：構建完整的頁面視圖，與路由系統直接對應
+> - 定義：構成應用程式的頂層容器，直接對應路由系統，負責構建完整的頁面視圖
 > - 目的：
->   - 作為應用程式頂層容器
->   - 整合並組合多個功能組件。
+>   - 作為應用程式的入口點，處理路由切換與頁面級狀態管理
+>   - 整合並協調多個功能組件，呈現完整的用戶介面和體驗
 
 ### 功能組件 {.section-spacing}
-> - 定義：構建頁面的最小可重用單位，專注於特定功能或 UI 區塊的實現
+> - 定義：頁面組件內部的最小可重用單元，專注於實現特定功能或 UI 區塊，無法獨立作為完整頁面顯示。
 > - 目的：
->   - 無法獨立作為完整頁面顯示
->   - 專注單一職責和功能
->   - 依賴於頁面組件進行組合
+>   - 單一職責原則，專注於特定的功能邏輯或 UI 呈現
+>   - 提高組件**可重用性(Reusability)** ，減少重複開發
 
 <style>
 .section-spacing {
@@ -109,7 +114,7 @@ backgroundSize: 'contain'
 layout: image
 ---
 
-# patient-page or record-homepage？
+# patient-page or record-homepage 誰是頁面組件？
 
 <img src="./public/t2.png"/>
 
@@ -130,13 +135,15 @@ class: items-center
 
 **以 Vita 專案為例，layout 層應該發揮的作用**
 - 路由管理：負責`router-outlet(路由出口)`的包裝與導航控制
-- 佈局組件整合：統一管理 navbar、sidebar 等全域性佈局元素(白話來說就是每個頁面都會出現)。
+- 佈局組件整合：統一管理 navbar、sidebar 等全域性佈局元素(即每個頁面都會出現的共用元件)。
 - 全域狀態協調：處理跨頁面共享的應用程式狀態
 
+<hr />
 
+架構優化建議
 ```
-搭配 tsconfig paths 設定 @features、@pages、@layouts
-強化引用來源的語意，而非透過相對路徑的方式
+搭配 tsconfig paths 設定 @features、@pages、@layouts、@shared 等路徑別名
+強化引用來源的語意表達，避免使用相對路徑的複雜引用方式。
 ```
 
 <style>
@@ -172,7 +179,7 @@ layout: two-cols
 
 ## app.route.ts
 
-```ts
+```ts {*}{maxHeight:'80%'}
 export const routes: Routes = [
   {
     path: 'sign-in',
@@ -205,6 +212,10 @@ export const routes: Routes = [
 .slidev-layout{
   gap: 2rem;
 }
+
+h2{
+  padding-bottom: .75rem;
+}
 </style>
 
 ---
@@ -213,11 +224,11 @@ layout: default
 
 <div class="grid grid-cols-2 gap-4 items-start pt-1">
   <div class="text-center">
-    <h2 class="pb-4">1. 舊架構分類方式</h2>
+    <h2 class="pb-4">舊架構分類方式</h2>
     <img src="./public/oldArchitecture01.png"/>
   </div>
   <div class="text-center">
-    <h2 class="pb-4">2. 新架構分類方式</h2>
+    <h2 class="pb-4">新架構分類方式</h2>
     <img src="./public/newArchitecture01.png"/>
   </div>
 </div>
@@ -234,13 +245,13 @@ layout: two-cols
 ---
 
 ## 為什麼要使用路由管理組件？ 
-- 🚀 **效能優化**：lazy-loading 能夠有效減少首次載入時間  
-- 🔒 **安全性**：權限管控的路由生命週期發生在組件初始化之前，相較於進入組件後再做檢查更安全且合理  
-- 🎯 **用戶體驗**：能夠預先加載初始化所需資料，並且記錄使用者的導覽歷程
+- **效能優化**：透過 lazy-loading 機制，能夠顯著降低應用程式的首次載入時間(First Contentful Paint, FCP)，提升整體使用者體驗。 
+- **安全性**：權限管控的路由生命週期發生在組件初始化之前，相較於進入組件後再做檢查更安全且合理  
+- **用戶體驗**：能夠預先加載初始化所需資料，並且記錄使用者的導覽歷程
 
 ::right::
 
-```ts {all|1-9|11-17|19-25|all}
+```ts {all|1-9|11-17|19-25|all}{maxHeight:'100%'}
 const routes: Routes = [
   {
     path: 'admin',
@@ -310,6 +321,7 @@ export class HostComponent implements OnInit {
   }
 }
 ```
+<a href="https://stackblitz.com/edit/stackblitz-starters-jdf2kb9a?file=src%2Fmain.ts">stackblitz 連結</a>
 
 ::right::
 
@@ -336,6 +348,8 @@ export class HostComponent implements OnInit {
 }
 ```
 
+<a href="https://stackblitz.com/edit/stackblitz-starters-pj9b5r7a?file=src%2Fmain.ts">stackblitz 連結</a>
+
 <style>
 .slidev-layout{
   gap: 2rem;
@@ -356,6 +370,8 @@ class: items-center
 - 🎯 服務採用 Singleton 單例模式 {.section-spacing}
   - 確保在整個應用生命週期內僅建立一份實例
   - 例如：身份驗證服務、前端緩存服務(Local/Session Storage)
+
+<a href="https://stackblitz.com/edit/stackblitz-starters-evrypbwv?file=package.json">stackblitz 連結(store 的三種初步構想)</a>
 
 <style>
 .section-spacing{
@@ -564,3 +580,9 @@ layout: full
 搭配網路環境速率**3G**，模擬延遲產生的情形
 
 <img src="https://res.cloudinary.com/dseg0uwc9/image/upload/v1749189313/00_xu6uiw.gif">
+
+---
+layout: center
+---
+
+# 感謝大家的參與
